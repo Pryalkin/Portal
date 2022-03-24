@@ -1,0 +1,34 @@
+<div class="container-fluid">
+  <div class="row p-1">
+    <div class="col p-3 border border-3 grad">
+      <table class="table table-bordered" style="background-color: #f8f8f8">
+        <thead>
+        <tr class="text-center">
+          <th>Photo</th>
+          <th>User id</th>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Actions</th>
+          <th>Page</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center" *ngFor="let user of users">
+          <td>
+            <div>
+              <img src="{{user.profileImageUrl}}" class="rounded-circle img-fluid border border-2" alt="это изображение" style="height: 40px">
+            </div>
+          </td>
+          <td>{{user.userId}}</td>
+          <td>{{user.firstName}} {{user.lastName}}</td>
+          <td>{{user.username}}</td>
+          <td>{{user.active}}</td>
+          <td>Actions</td>
+          <td><button type="button" class="btn btn-outline-info" (click)="goToPage(user.username)">Page</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

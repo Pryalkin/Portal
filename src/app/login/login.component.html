@@ -1,0 +1,38 @@
+<div class="container-fluid">
+  <div class="row p-5">
+    <div class="col-lg-4 col-sm-3"></div>
+    <div class="col-lg-4 col-sm-6 p-5 rounded" style="background-color: aquamarine">
+      <h1>Login</h1>
+      <p class="text-muted">Sign In to your account</p>
+      <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm.value)">
+        <div class="input-group mb-4 border border-2 rounded" style="background-color: darkgray">
+          <i class="bi bi-person pe-2 ps-2"></i>
+          <input type="text" class="form-control" name="username" placeholder="Username"
+                 ngModel #usernameInput="ngModel" required>
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="usernameInput.invalid && usernameInput.touched">Please enter a username</span>
+        <div class="input-group mb-4 border border-2 rounded" style="background-color: darkgray">
+          <i class="bi bi-key pe-2 ps-2"></i>
+          <input type="password" class="form-control" name="password" placeholder="Password"
+                 ngModel #passwordInput="ngModel" required>
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="passwordInput.invalid && passwordInput.touched">Please enter a password</span>
+        <div class="d-flex justify-content-center mt-3">
+          <button type="submit" name="button" [disabled]="loginForm.invalid || showLoading" class="btn btn-primary px-4">
+            <i *ngIf="showLoading" class="spinner-border"></i>&nbsp;&nbsp;
+            <span *ngIf="showLoading" class="sr-only">Loading...</span>
+            <span *ngIf="!showLoading">Login</span>
+          </button>
+        </div>
+      </form>
+      <div class="mt-4">
+        <div class="d-flex justify-content-center">
+          Don't have an account? <a routerLink="/register">Sign Up</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-sm-3"></div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="container-fluid">
+  <div class="row p-1">
+    <div class="col p-3 border border-3 grad">
+      <h1>Обзор</h1>
+      <form class="form"  #newOverviewForm="ngForm" (ngSubmit)="onAddNewOverview(newOverviewForm)">
+        <span class="fst-italic">Select a group:</span>
+        <div class="input-group mb-2">
+          <select class="form-select form-select-lg mb-3" type="text" name="group" ngModel="Games" required>
+            <option value="Games">Games</option>
+            <option value="Technology">Technology</option>
+            <option value="TV">TV</option>
+            <option value="Cars">Cars</option>
+            <option value="Clothes">Clothes</option>
+            <option value="Sport">Sport</option>
+          </select>
+        </div>
+        <span class="help-block fst-italic" style="color: red;"
+              *ngIf="topicInput.invalid && topicInput.touched"><strong>Please! </strong></span>
+        <span class="fst-italic">Enter a topic:</span>
+        <div class="input-group mb-2">
+          <input class="form-control form-control-lg" type="text" name="topic" placeholder="Topic"
+                 required ngModel #topicInput="ngModel">
+        </div>
+        <span class="help-block fst-italic" style="color: red;"
+              *ngIf="tagInput.invalid && tagInput.touched"><strong>Please! </strong></span>
+        <span class="fst-italic">Enter a tag(s):</span>
+        <div class="input-group mb-2 tag" id="divTag1">
+          <input class="form-control form-control-lg" type="text" name="tag1" (input)="getValueFromInput()" [(ngModel)]="search" id="inputTag1" placeholder="Tag" required
+                 ngModel #tagInput="ngModel">
+          <button class="btn btn-primary b" type="button" (click)="addTag()">+</button>
+        </div>
+
+        <div class="list-group mb-2">
+          <button *ngFor="let search of searchList" type="button" class="list-group-item list-group-item-action fst-italic" (click)="valueForInput(search)">{{search}}</button>
+        </div>
+
+        <div class="input-group mb-3 tag" [hidden]="tag2">
+          <input class="form-control form-control-lg" type="text" name="tag2" id="inputTag2" placeholder="Tag" ngModel>
+          <button class="btn btn-primary b" type="button" (click)="deleteTag(2)">-</button>
+        </div>
+        <div class="input-group mb-3 tag" [hidden]="tag3">
+          <input class="form-control form-control-lg" type="text" name="tag3" id="inputTag3" placeholder="Tag" ngModel>
+          <button class="btn btn-primary b" type="button" (click)="deleteTag(3)">-</button>
+        </div>
+        <span class="fst-italic">Select a grade:</span>
+        <div class="input-group mb-3">
+          <select class="form-select form-select-lg mb-3" type="text" name="grade" ngModel="5" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="input-group mb-3 image">
+          <input class="form-control form-control-lg" type="file" name="image" placeholder="Image" required
+                 ngModel #imageInput="ngModel" (change)="onImage($event, 1)">
+          <button class="btn btn-primary q" type="button" (click)="addFile()">+</button>
+        </div>
+<!--        <span class="help-block" style="color: red;"-->
+<!--              *ngIf="imageInput.invalid && imageInput.touched">Please enter a тема</span>-->
+        <div class="input-group mb-3 image" [hidden]="file2">
+          <input class="form-control form-control-lg" type="file" name="image" placeholder="Image" required
+                 (change)="onImage($event, 2)">
+          <button class="btn btn-primary q" type="button" (click)="deleteFile(2)">-</button>
+        </div>
+        <div class="input-group mb-3 image" [hidden]="file3">
+          <input class="form-control form-control-lg" type="file" name="image" placeholder="Image" required
+                 (change)="onImage($event, 3)">
+          <button class="btn btn-primary q" type="button" (click)="deleteFile(3)">-</button>
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="advantagesInput.invalid && advantagesInput.touched"><strong>Please! </strong></span>
+        <span class="fst-italic">Enter a advantages:</span>
+        <div class="input-group mb-3">
+          <textarea  class="form-control form-control-lg" type="text" name="advantages" placeholder="Advantages" required
+                     ngModel #advantagesInput="ngModel"></textarea>
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="disadvantagesInput.invalid && disadvantagesInput.touched"><strong>Please! </strong></span>
+        <span class="fst-italic">Enter a disadvantages:</span>
+        <div class="input-group mb-3">
+          <textarea  class="form-control form-control-lg" type="text" name="disadvantages" placeholder="Disadvantages" required
+                     ngModel #disadvantagesInput="ngModel"></textarea>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+          <button type="submit" style="display: none" id="new-overview-save"></button>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" id="new-overview-close">Close</button>
+        <button class="btn btn-primary" [disabled]="newOverviewForm.invalid || showLoading"
+                type="button" (click)="saveNewOverview()">Save overview</button>
+      </div>
+    </div>
+  </div>
+</div>

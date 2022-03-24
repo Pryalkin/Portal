@@ -1,0 +1,68 @@
+<div class="container-fluid">
+  <div class="row p-2">
+
+    <div class="col-lg-3 col-md-4 col-sm-6">
+      <div class="row border border-5 m-1" style="background-color: #f8f8f8;" *ngIf="username != null">
+        <div class="col-12 p-2">
+          <p>Вы зашли под: <strong>{{username}}</strong></p>
+          <button class="btn btn-primary" (click)="logOutUser()">Log Out</button>
+        </div>
+      </div>
+      <div class="row border border-5 m-1" style="background-color: #f8f8f8;">
+        <div class="col-12 p-2">
+          <div class="row p-3">
+            <div class="col-12 d-flex justify-content-center">
+              <img src="{{user.profileImageUrl}}" alt="это изображение" class="img-fluid img-thumbnail" style="height: 250px; width: 250px">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-9 col-sm-12 border border-5" style="background-color: #f8f8f8">
+      <div class="col-12 p-3">
+        <div class="row">
+          <div class="col-6">
+            <span class="h5"><strong>{{user.firstName}} {{user.lastName}}</strong></span>
+          </div>
+          <div class="col-4">
+            <span class="fst-italic">{{user.joinDate | date: "medium"}}</span>
+          </div>
+          <div class="col-2 d-flex justify-content-end">
+            <button class="btn btn-primary" (click)="logOut()">Log Out</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link fst-italic" routerLinkActive="active" routerLink="viewReviews"><strong>Обзоры</strong></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fst-italic" routerLinkActive="active" routerLink="review"><strong>Создать обзор</strong></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fst-italic"><strong>Лайки</strong></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fst-italic"><strong>Рейтинги</strong></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fst-italic"><strong>Настройки</strong></a>
+            </li>
+            <li *ngIf="checkForAdmin" class="nav-item fst-italic">
+              <a class="nav-link" routerLinkActive="active" routerLink="administration"><strong>Администрирование</strong></a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+

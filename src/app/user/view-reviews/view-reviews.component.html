@@ -1,0 +1,108 @@
+<div class="container-fluid">
+  <div class="row p-1">
+    <div class="col-12 p-3 border border-3 grad">
+      <div class="container-fluid">
+        <div class="row p-2 pt-5">
+          <div class="col-12 border border-2 p-2" style="background-color: #f8f8f8">
+            <div class="row align-items-center">
+              <div class="col-2"><span class="fst-italic">Сортировка по: </span></div>
+              <div class="col-2">
+                <div class="btn-group-vertical" role="group" aria-label="Базовая группа переключателей радио">
+                  <input type="radio" class="btn-check" name="btnradioSort" id="btnradio5" autocomplete="off" checked (click)="check('1')">
+                  <label class="btn btn-outline-info" for="btnradio5">дате</label>
+                  <input type="radio" class="btn-check" name="btnradioSort" id="btnradio6" autocomplete="off" (click)="check('2')">
+                  <label class="btn btn-outline-info" for="btnradio6">рейтингу</label>
+                  <input type="radio" class="btn-check" name="btnradioSort" id="btnradio7" autocomplete="off" (click)="check('3')">
+                  <label class="btn btn-outline-info" for="btnradio7">лайкам</label>
+                </div>
+              </div>
+              <div class="col-2 d-flex justify-content-end"><span class="fst-italic">Фильтер по: </span></div>
+              <div class="col-2">
+                <div class="btn-group-vertical" role="group" aria-label="Базовая группа переключателей радио">
+                  <input type="radio" class="btn-check" name="btnradioFilter" id="btnradio8" autocomplete="off" (click)="filter('1')">
+                  <label class="btn btn-outline-info" for="btnradio8">group</label>
+                  <input type="radio" class="btn-check" name="btnradioFilter" id="btnradio10" checked autocomplete="off" (click)="filter('3')">
+                  <label class="btn btn-outline-info" for="btnradio10">сброс</label>
+                </div>
+              </div>
+              <div class="col-4" *ngIf="filterCheck">
+                <form #filterForm="ngForm" (ngSubmit)="groupFilter(filterForm)">
+                  <div class="row">
+                    <div class="col-6"><select class="form-select" id="filter" type="text" name="filter" ngModel>
+                      <option value="Games">Games</option>
+                      <option value="Technology">Technology</option>
+                      <option value="TV">TV</option>
+                      <option value="Cars">Cars</option>
+                      <option value="Clothes">Clothes</option>
+                      <option value="Sport">Sport</option>
+                    </select></div>
+                    <div class="col-6"><button class="btn btn-info">Filter</button></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row p-2" *ngFor="let review of generalOverviews" id="mainBlock{{review.id}}">
+          <button class="btn btn-secondary" hidden (click)="restoreGeneralOverview(review.id)">Востановить обзор</button>
+          <div class="col-12 border border-3 rounded-3" style="background-color: #f8f8f8" id="idReview{{review.id}}">
+            <div class="row p-2">
+              <div class="col-md-8 col-sm-12">
+                <a class="link-dark text-decoration-none" routerLink="/group/user/{{review.id}}">
+                  <span class="h3"><strong>{{review.overview.topic}}</strong></span>
+                </a>
+              </div>
+              <div class="col-md-3 col-sm-12 p-sm-2">
+                <span><em>{{review.overview.date| date: "medium"}}</em></span>
+              </div>
+              <div class="col-md-1 col-sm-12 p-sm-2 d-flex justify-content-end">
+                <i type="button" class="bi-trash" title="delete" (click)="deleteReview(review.id)"></i>
+              </div>
+            </div>
+            <div class="row p-2">
+              <div id="file{{review.id}}" class="col-md-4 col-sm-12 carousel slide" data-bs-ride="carousel" style="min-height: 250px; min-width: 200px">
+                <div class="carousel-inner" style="height: 250px; width: 200px">
+                  <div *ngFor="let image of review.images; let idx = index;" class="carousel-item" [ngClass]="{active: idx === 0}">
+                    <img src="{{image.image}}" class="img-fluid img-thumbnail" alt="..." style="height: 250px; width: 200px">
+                  </div>
+                  <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#file'+review.id" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Предыдущий</span>
+                  </button>
+                  <button class="carousel-control-next" type="button"[attr.data-bs-target]="'#file'+review.id" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Следующий</span>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-8 col-sm-12">
+                <app-vote id="{{review.id}}"></app-vote>
+                <div class="row">
+                  <div class="col-md-6 col-sm-12 p-3">
+                    <div class="div rounded border border-2" style="min-height: 200px; min-width: 200px">
+                      <span class="m-2"><strong>Достоинства: </strong><em>{{review.overview.advantages}}</em></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 p-3">
+                    <div class="div rounded border border-2" style="min-height: 200px; min-width: 200px">
+                      <span class="m-2"><strong>Недостатки: </strong><em>{{review.overview.disadvantages}}</em></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row p-1">
+              <div class="col-md-9 col-sm-12">
+                <strong>Создал: </strong><em>{{review.user.firstName}} {{review.user.lastName}}</em>
+                <img src="{{review.user.profileImageUrl}}" class="rounded-circle img-fluid border border-2" alt="..." style="height: 40px">
+              </div>
+              <div class="col-md-3 col-sm-12">
+                <span><strong>Оценка автора: {{review.overview.grade}}</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

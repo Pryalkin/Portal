@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <div class="row p-5">
+    <div class="col-lg-4 col-sm-3"></div>
+    <div class="col-lg-4 col-sm-6 p-5" style="background-color: aquamarine">
+      <h1>Register</h1>
+      <p class="text-muted">Sign In to your account</p>
+      <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm.value)">
+        <div class="input-group mb-3">
+          <input class="form-control form-control-lg" type="text" name="firstName" placeholder="First name" required
+                 ngModel #firstNameInput="ngModel">
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="firstNameInput.invalid && firstNameInput.touched">Please enter a first name</span>
+        <div class="input-group mb-3">
+          <input class="form-control form-control-lg" type="text" name="lastName" placeholder="Last name" required
+                 ngModel #lastNameInput="ngModel">
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="lastNameInput.invalid && lastNameInput.touched">Please enter a last name</span>
+        <div class="input-group mb-3">
+          <input class="form-control form-control-lg" type="text" name="username" placeholder="Username" required
+                 ngModel #usernameInput="ngModel">
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="usernameInput.invalid && usernameInput.touched">Please enter an username</span>
+        <div class="input-group mb-3">
+          <input class="form-control form-control-lg" type="email" name="email"  placeholder="Email" required
+                 ngModel #emailInput="ngModel">
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="emailInput.invalid && emailInput.touched">Please enter an email</span>
+        <div class="input-group mb-3">
+          <input class="form-control form-control-lg" type="email" name="password"  placeholder="Password" required
+                 ngModel #emailInput="ngModel">
+        </div>
+        <span class="help-block" style="color: red;"
+              *ngIf="emailInput.invalid && emailInput.touched">Please enter an password</span>
+        <div class="d-flex justify-content-center mt-3">
+          <button type="submit" name="button" [disabled]="registerForm.invalid || showLoading" class="btn btn-primary px-4">
+            <i *ngIf="showLoading" class="spinner-border"></i>&nbsp;&nbsp;
+            <span *ngIf="showLoading" class="sr-only">Loading...</span>
+            <span *ngIf="!showLoading">Register</span>
+          </button>
+        </div>
+      </form>
+      <div class="mt-4">
+        <div class="d-flex justify-content-center">
+          Already have an account? <a routerLink="/login">Log In</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-sm-3"></div>
+  </div>
+</div>
+
