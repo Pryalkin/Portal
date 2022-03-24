@@ -25,7 +25,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = {"/overview"})
-@Slf4j
 public class GeneralOverviewResource extends ExceptionHandling {
 
     private final GeneralGeneralOverviewServiceImpl generalOverviewService;

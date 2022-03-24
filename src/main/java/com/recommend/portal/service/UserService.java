@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException;
+    User register(String firstName, String lastName, String username, String email, String password) throws UserNotFoundException, UsernameExistException, EmailExistException, MessagingException;
     List<User> getUsers();
     User findUserByUsername(String username);
     User findUserByEmail(String email);
