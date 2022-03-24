@@ -25,6 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = {"/overview"})
+@CrossOrigin(origins = "*")
 public class GeneralOverviewResource extends ExceptionHandling {
 
     private final GeneralGeneralOverviewServiceImpl generalOverviewService;
