@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.recommend.portal.domain.UserPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class JWTTokenProvider {
 
     @Value("${jwt.secret}")
@@ -86,6 +88,7 @@ public class JWTTokenProvider {
         for (GrantedAuthority grantedAuthority: user.getAuthorities()){
             authorities.add(grantedAuthority.getAuthority());
         }
-        return authorities.toArray(new String[0]);
+        return authorities.toArray(String[]::new);
+//        return authorities.toArray(new String[0]);
     }
 }

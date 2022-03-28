@@ -12,6 +12,7 @@ import com.recommend.portal.repository.UserRepository;
 import com.recommend.portal.service.EmailService;
 import com.recommend.portal.service.LoginAttemptService;
 import com.recommend.portal.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,19 +48,13 @@ import static org.springframework.http.HttpStatus.OK;
 @Transactional
 @Qualifier("userDetailsService")
 @Slf4j
+@AllArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
-    private LoginAttemptService loginAttemptService;
-    private EmailService emailService;
-
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService, EmailService emailService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.loginAttemptService = loginAttemptService;
-        this.emailService = emailService;
-    }
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final LoginAttemptService loginAttemptService;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -102,7 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         log.info("New user password: " + password);
-//        emailService.sendNewPasswordEmail(firstName, password, email);
+        emailService.sendNewPasswordEmail(firstName, password, email);
         return user;
     }
 
@@ -187,13 +182,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
             if (!Files.exists(userFolder)){
                 Files.createDirectories(userFolder);
-                log.info(DIRECTORY_CREATED + userFolder);
             }
             Files.deleteIfExists(Paths.get(userFolder + user.getUsername() + DOT + JPG_EXTENSION));
             Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getUsername() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
             user.setProfileImageUrl(setProfileImageUrl(user.getUsername()));
             userRepository.save(user);
-            log.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }
     }
 

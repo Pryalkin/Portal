@@ -19,13 +19,4 @@ public class Comments {
     @OneToOne
     private User user;
 
-    @Override
-    public String toString() {
-        return "Comments{" +
-                "id=" + id +
-                ", comment='" + comment + '\'' +
-                ", date=" + date +
-                ", user=" + user +
-                '}';
-    }
 }

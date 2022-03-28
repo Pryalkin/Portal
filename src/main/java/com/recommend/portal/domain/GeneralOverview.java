@@ -34,17 +34,4 @@ public class GeneralOverview implements Serializable {
     @OneToMany
     private List<Comments> comments;
 
-    @Override
-    public String toString() {
-        return "GeneralOverview{" +
-                "id=" + id +
-                ", overview=" + overview +
-                ", tags=" + tags +
-                ", images=" + images +
-                ", user=" + user +
-                ", rating=" + rating +
-                ", likeAndDislike=" + likeAndDislike +
-                ", comments=" + comments +
-                '}';
-    }
 }

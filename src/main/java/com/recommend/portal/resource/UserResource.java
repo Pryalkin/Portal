@@ -11,6 +11,7 @@ import com.recommend.portal.exception.domain.UsernameExistException;
 import com.recommend.portal.service.GeneralOverviewService;
 import com.recommend.portal.service.UserService;
 import com.recommend.portal.utility.JWTTokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController
 @RequestMapping(path = { "/", "/user"})
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class UserResource extends ExceptionHandling {
 
     public static final String EMAIL_SENT = "An email with a new password was sent to: ";
@@ -63,7 +64,6 @@ public class UserResource extends ExceptionHandling {
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        System.out.println(jwtHeader.get(JWT_TOKEN_HEADER));
         return new ResponseEntity<>(loginUser, jwtHeader, OK);
     }
 

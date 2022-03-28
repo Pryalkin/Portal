@@ -14,21 +14,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/group")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class GroupResource extends ExceptionHandling {
 
     private final GeneralOverviewService generalOverviewService;
 
-    @GetMapping("/{group}/{i}")
+    @GetMapping("/{group}/{iSortingCode}")
     public ResponseEntity<List<GeneralOverview>> getAllTopicGroup(@PathVariable("group") String group,
-                                                                  @PathVariable("i") String i){
-        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllGroupTopics(group, Long.parseLong(i));
+                                                                  @PathVariable("iSortingCode") String iSortingCode){
+        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllGroupTopics(group, Long.parseLong(iSortingCode));
         return new ResponseEntity<>(generalOverviewList, HttpStatus.OK);
     }
 
-    @GetMapping("/{i}")
-    public ResponseEntity<List<GeneralOverview>> getAllTopicGroupForHome(@PathVariable("i") String i){
-        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllGroupTopicsForHome(Long.parseLong(i));
+    @GetMapping("/{iSortingCode}")
+    public ResponseEntity<List<GeneralOverview>> getAllTopicGroupForHome(@PathVariable("iSortingCode") String iSortingCode){
+        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllGroupTopicsForHome(Long.parseLong(iSortingCode));
         return new ResponseEntity<>(generalOverviewList, HttpStatus.OK);
     }
 
@@ -38,12 +38,11 @@ public class GroupResource extends ExceptionHandling {
         return new ResponseEntity<>(generalOverview, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{username}/{i}")
+    @GetMapping("/user/{username}/{iSortingCode}")
     public ResponseEntity<List<GeneralOverview>> getAllTopicGroupForUser(@PathVariable("username") String username,
-                                                                         @PathVariable("i") String i){
-        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllUseReview(username, Long.parseLong(i));
+                                                                         @PathVariable("iSortingCode") String iSortingCode){
+        List<GeneralOverview> generalOverviewList = generalOverviewService.getAllUseReview(username, Long.parseLong(iSortingCode));
         return new ResponseEntity<>(generalOverviewList, HttpStatus.OK);
     }
-
 
 }

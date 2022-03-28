@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = {"/overview"})
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class GeneralOverviewResource extends ExceptionHandling {
 
     private final GeneralGeneralOverviewServiceImpl generalOverviewService;
@@ -35,7 +35,6 @@ public class GeneralOverviewResource extends ExceptionHandling {
     public GeneralOverviewResource(GeneralGeneralOverviewServiceImpl generalOverviewService) {
         this.generalOverviewService = generalOverviewService;
     }
-
 
     @PostMapping("/save")
     public ResponseEntity<GeneralOverview> saveGeneralOverview(@RequestParam("group") String group,
@@ -90,6 +89,5 @@ public class GeneralOverviewResource extends ExceptionHandling {
         HttpResponse body = new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message.toUpperCase());
         return new ResponseEntity<>(body, httpStatus);
     }
-
 
 }

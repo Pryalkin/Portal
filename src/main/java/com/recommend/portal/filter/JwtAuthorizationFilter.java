@@ -5,6 +5,7 @@ import com.recommend.portal.utility.JWTTokenProvider;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import java.util.List;
 import static com.recommend.portal.constant.SecurityConstant.*;
 
 @Component
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private JWTTokenProvider jwtTokenProvider;
 

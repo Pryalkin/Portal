@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.recommend.portal.constant.FileConstant.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Service
 @AllArgsConstructor
@@ -40,108 +41,33 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
     public GeneralOverview saveReview(String group, String topic, Long grade, String advantages, String disadvantages, String tags1, String tags2, String tags3, MultipartFile image1, MultipartFile image2, MultipartFile image3, String username) throws IOException {
         GeneralOverview generalOverview = new GeneralOverview();
         generalOverview.setOverview(overviewRepository.save(new Overview(group, topic, grade, advantages, disadvantages)));
-        generalOverview.setTags(tagsList(tags1, tags2, tags3));
+        generalOverview.setTags(getTagsList(tags1, tags2, tags3));
         User user = userRepository.findUserByUsername(username);
         generalOverview.setUser(user);
-        generalOverview.setImages(saveOverviewImages(user, getListImageOverview(image1, image2, image3)));
-        Rating rating = new Rating(grade, user);
+        generalOverview.setImages(saveImagesFromOverview(user, getListImageOverview(image1, image2, image3)));
         List<Rating> ratingList = new ArrayList<>();
-        ratingList.add(ratingRepository.save(rating));
+        ratingList.add(ratingRepository.save(new Rating(grade, user)));
         generalOverview.setRating(ratingList);
         generalOverviewRepository.save(generalOverview);
         return generalOverview;
     }
 
     @Override
-    public List<GeneralOverview> getAllGroupTopics(String group, Long i) {
+    public List<GeneralOverview> getAllGroupTopics(String group, Long iSortingCode) {
         List<GeneralOverview> generalOverviewList = generalOverviewRepository.findByOverviewGroupOverview(group);
-        return sortGeneralOverview(generalOverviewList, i);
+        return sortGeneralOverview(generalOverviewList, iSortingCode);
     }
 
     @Override
-    public List<GeneralOverview> getAllUseReview(String username, Long i) {
-        List<GeneralOverview> generalOverviewList = generalOverviewRepository.findByUserUsername(username);
-        return sortGeneralOverview(generalOverviewList, i);
-    }
-
-    @Override
-    public List<GeneralOverview> getAllGroupTopicsForHome(Long i) {
+    public List<GeneralOverview> getAllGroupTopicsForHome(Long iSortingCode) {
         List<GeneralOverview> generalOverviewList = generalOverviewRepository.findAll();
-        return sortGeneralOverview(generalOverviewList, i);
+        return sortGeneralOverview(generalOverviewList, iSortingCode);
     }
 
-    private List<GeneralOverview> sortGeneralOverview(List<GeneralOverview> generalOverviewList, Long i) {
-        if (i == 1){
-            return getAllGroupTopicsByDate(generalOverviewList);
-        } else if (i == 2){
-            return getAllGroupTopicsByRating(generalOverviewList);
-        } else if (i == 3){
-            return getAllGroupTopicsByLike(generalOverviewList);
-        }
-        return generalOverviewList;
-    }
-
-    private List<GeneralOverview> getAllGroupTopicsByLike(List<GeneralOverview> generalOverviewList) {
-        generalOverviewList.sort(new Comparator<GeneralOverview>() {
-            @Override
-            public int compare(GeneralOverview g1, GeneralOverview g2) {
-                long sumLikeG1 = 0;
-                long sumLikeG2 = 0;
-                for (LikeAndDislike like: g1.getLikeAndDislike()) {
-                    if (like.getL1ke() != null) {
-                        if (like.getL1ke()) {
-                            sumLikeG1++;
-                        }
-                    }
-                }
-                for (LikeAndDislike like: g2.getLikeAndDislike()) {
-                    if (like.getL1ke() != null) {
-                        if (like.getL1ke()) {
-                            sumLikeG2++;
-                        }
-                    }
-                }
-                if (sumLikeG1 == sumLikeG2) return 0;
-                else if (sumLikeG1 < sumLikeG2) return 1;
-                else return -1;
-            }
-        });
-        return generalOverviewList;
-    }
-
-    private List<GeneralOverview> getAllGroupTopicsByRating(List<GeneralOverview> generalOverviewList) {
-        generalOverviewList.sort(new Comparator<GeneralOverview>() {
-            @Override
-            public int compare(GeneralOverview g1, GeneralOverview g2) {
-                long sumRatingG1 = 0;
-                long sumRatingG2 = 0;
-                for (Rating rating: g1.getRating()) {
-                    sumRatingG1 += rating.getRating();
-                }
-                for (Rating rating: g2.getRating()) {
-                    sumRatingG2 += rating.getRating();
-                }
-                double ratingG1 = sumRatingG1 / g1.getRating().size();
-                double ratingG2 = sumRatingG2 / g2.getRating().size();
-                if (ratingG1 == ratingG2) return 0;
-                else if (ratingG1 < ratingG2) return 1;
-                else return -1;
-            }
-        });
-        return generalOverviewList;
-    }
-
-    private List<GeneralOverview> getAllGroupTopicsByDate(List<GeneralOverview> generalOverviewList) {
-        generalOverviewList.sort(new Comparator<GeneralOverview>() {
-            @Override
-            public int compare(GeneralOverview g1, GeneralOverview g2) {
-                if (g1.getOverview().getDate().equals(g2.getOverview().getDate())) return 0;
-                else if (g1.getOverview().getDate().before(g2.getOverview().getDate())) return 1;
-                else return -1;
-            }
-        });
-        log.info(generalOverviewList.toString());
-        return generalOverviewList;
+    @Override
+    public List<GeneralOverview> getAllUseReview(String username, Long iSortingCode) {
+        List<GeneralOverview> generalOverviewList = generalOverviewRepository.findByUserUsername(username);
+        return sortGeneralOverview(generalOverviewList, iSortingCode);
     }
 
     @Override
@@ -157,33 +83,6 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
        } else {
            return setLikeAndDislike(generalOverview, username, rating);
        }
-    }
-
-    private GeneralOverview setLikeAndDislike(GeneralOverview generalOverview, String username, Long rating){
-        LikeAndDislike likeAndDislike = new LikeAndDislike();
-        if (rating == 6) {
-            likeAndDislike = new LikeAndDislike(true, null, userRepository.findUserByUsername(username));
-        } else if (rating == 7){
-            likeAndDislike = new LikeAndDislike(null, true, userRepository.findUserByUsername(username));
-        }
-        if (generalOverview.getLikeAndDislike() == null){
-            List<LikeAndDislike> likeAndDislikeList = new ArrayList<>();
-            likeAndDislikeList.add(likeAndDislikeRepository.save(likeAndDislike));
-            generalOverview.setLikeAndDislike(likeAndDislikeList);
-        } else {
-            List<LikeAndDislike> likeAndDislikeList = generalOverview.getLikeAndDislike();
-            likeAndDislikeList.add(likeAndDislikeRepository.save(likeAndDislike));
-            generalOverview.setLikeAndDislike(likeAndDislikeList);
-        }
-        return generalOverviewRepository.save(generalOverview);
-    }
-
-    private GeneralOverview setRating(GeneralOverview generalOverview, String username, Long rating){
-        Rating newRating = new Rating(rating, userRepository.findUserByUsername(username));
-            List<Rating> ratingList = generalOverview.getRating();
-            ratingList.add(ratingRepository.save(newRating));
-            generalOverview.setRating(ratingList);
-        return generalOverviewRepository.save(generalOverview);
     }
 
     @Override
@@ -227,6 +126,85 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
         }
     }
 
+    private List<GeneralOverview> sortGeneralOverview(List<GeneralOverview> generalOverviewList, Long i) {
+        if (i == 1){
+            return getAllGroupTopicsByDate(generalOverviewList);
+        } else if (i == 2){
+            return getAllGroupTopicsByRating(generalOverviewList);
+        } else if (i == 3){
+            return getAllGroupTopicsByLike(generalOverviewList);
+        }
+        return generalOverviewList;
+    }
+
+    private List<GeneralOverview> getAllGroupTopicsByLike(List<GeneralOverview> generalOverviewList) {
+        generalOverviewList.sort(new Comparator<GeneralOverview>() {
+            @Override
+            public int compare(GeneralOverview g1, GeneralOverview g2) {
+                long sumLikeG1 = g1.getLikeAndDislike().stream().filter(i -> i.getL1ke() == true).count();
+                long sumLikeG2 = g2.getLikeAndDislike().stream().filter(i -> i.getL1ke() == true).count();
+                if (sumLikeG1 == sumLikeG2) return 0;
+                else if (sumLikeG1 < sumLikeG2) return 1;
+                else return -1;
+            }
+        });
+        return generalOverviewList;
+    }
+
+    private List<GeneralOverview> getAllGroupTopicsByRating(List<GeneralOverview> generalOverviewList) {
+        generalOverviewList.sort(new Comparator<GeneralOverview>() {
+            @Override
+            public int compare(GeneralOverview g1, GeneralOverview g2) {
+                double ratingG1 = g1.getRating().stream().mapToLong(i -> i.getRating()).sum() / g1.getRating().size();
+                double ratingG2 = g2.getRating().stream().mapToLong(i -> i.getRating()).sum() / g2.getRating().size();
+                if (ratingG1 == ratingG2) return 0;
+                else if (ratingG1 < ratingG2) return 1;
+                else return -1;
+            }
+        });
+        return generalOverviewList;
+    }
+
+    private List<GeneralOverview> getAllGroupTopicsByDate(List<GeneralOverview> generalOverviewList) {
+        generalOverviewList.sort(new Comparator<GeneralOverview>() {
+            @Override
+            public int compare(GeneralOverview g1, GeneralOverview g2) {
+                if (g1.getOverview().getDate().equals(g2.getOverview().getDate())) return 0;
+                else if (g1.getOverview().getDate().before(g2.getOverview().getDate())) return 1;
+                else return -1;
+            }
+        });
+        return generalOverviewList;
+    }
+
+    private GeneralOverview setLikeAndDislike(GeneralOverview generalOverview, String username, Long rating){
+        LikeAndDislike likeAndDislike = new LikeAndDislike();
+        if (rating == 6) {
+            likeAndDislike = new LikeAndDislike(true, null, userRepository.findUserByUsername(username));
+        } else if (rating == 7){
+            likeAndDislike = new LikeAndDislike(null, true, userRepository.findUserByUsername(username));
+        }
+        if (generalOverview.getLikeAndDislike() == null){
+            List<LikeAndDislike> likeAndDislikeList = new ArrayList<>();
+            likeAndDislikeList.add(likeAndDislikeRepository.save(likeAndDislike));
+            generalOverview.setLikeAndDislike(likeAndDislikeList);
+        } else {
+            List<LikeAndDislike> likeAndDislikeList = generalOverview.getLikeAndDislike();
+            likeAndDislikeList.add(likeAndDislikeRepository.save(likeAndDislike));
+            generalOverview.setLikeAndDislike(likeAndDislikeList);
+        }
+        return generalOverviewRepository.save(generalOverview);
+    }
+
+    private GeneralOverview setRating(GeneralOverview generalOverview, String username, Long rating){
+        Rating newRating = new Rating(rating, userRepository.findUserByUsername(username));
+        List<Rating> ratingList = generalOverview.getRating();
+        ratingList.add(ratingRepository.save(newRating));
+        generalOverview.setRating(ratingList);
+        return generalOverviewRepository.save(generalOverview);
+    }
+
+
     private List<Comments> commentRegistration(GeneralOverview generalOverview, List<Comments> commentsList, Comments comments) {
         comments.setUser(userRepository.findUserByUsername(comments.getUser().getUsername()));
         comments.setDate(new Date());
@@ -245,16 +223,16 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
         return overviewImages;
     }
 
-    private List<Tags> tagsList(String tags1, String tags2, String tags3) {
+    private List<Tags> getTagsList(String tags1, String tags2, String tags3) {
         List<Tags> tagsList = new ArrayList<>();
         Tags tag = new Tags();
         tag = (checkIfTagExistsInDB(tags1)) ? tagsRepository.findByTag(tags1).get() : tagsRepository.save(new Tags(tags1));
         tagsList.add(tag);
-        if (!tags2.equals("")) {
+        if (!tags2.equals(EMPTY)) {
             tag = (checkIfTagExistsInDB(tags2)) ? tagsRepository.findByTag(tags1).get() : tagsRepository.save(new Tags(tags2));
             tagsList.add(tag);
         }
-        if (!tags3.equals("")) {
+        if (!tags3.equals(EMPTY)) {
             tag = (checkIfTagExistsInDB(tags3)) ? tagsRepository.findByTag(tags3).get() : tagsRepository.save(new Tags(tags3));
             tagsList.add(tag);
         }
@@ -266,7 +244,7 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
     }
 
 
-    private List<Images> saveOverviewImages(User user, List<MultipartFile> overviewImages) throws IOException {
+    private List<Images> saveImagesFromOverview(User user, List<MultipartFile> overviewImages) throws IOException {
         List<Images> images = new ArrayList<>();
         for (MultipartFile imageOverview : overviewImages) {
             if (imageOverview != null) {
@@ -292,7 +270,5 @@ public class GeneralGeneralOverviewServiceImpl implements GeneralOverviewService
     private String generateName() {
         return RandomStringUtils.randomAlphanumeric(10);
     }
-
-
 
 }

@@ -3,6 +3,7 @@ package com.recommend.portal.listener;
 import com.recommend.portal.domain.UserPrincipal;
 import com.recommend.portal.service.LoginAttemptService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;

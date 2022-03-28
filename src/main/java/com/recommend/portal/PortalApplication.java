@@ -1,6 +1,7 @@
 package com.recommend.portal;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import static com.recommend.portal.constant.FileConstant.USER_FOLDER;
 
 @SpringBootApplication
+@Slf4j
 public class PortalApplication {
 
 	public static void main(String[] args) {
