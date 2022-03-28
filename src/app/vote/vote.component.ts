@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 import {GeneralOverviewService} from "../service/general-overview.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   selector: 'app-vote',
@@ -17,6 +18,7 @@ import {Subscription} from "rxjs";
 })
 export class VoteComponent implements OnInit, OnDestroy {
 
+  private host: string = environment.apiUrl;
   private stompClient!: CompatClient;
   authorisationFlag: boolean = false;
   private username!: string;
@@ -26,7 +28,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   element?: HTMLElement;
   iElement?: HTMLElement;
   private subscriptions: Subscription[] = [];
-  socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+  socket = new SockJS(`${this.host}/gs-guide-websocket`);
 
   constructor( private authenticationService: AuthenticationService,
                private notificationService: NotificationService,
@@ -34,8 +36,6 @@ export class VoteComponent implements OnInit, OnDestroy {
                private generalOverviewService: GeneralOverviewService) { }
 
   ngOnInit(): void {
-    console.log('++++++11111111111111+++++++')
-    console.log(document.getElementsByTagName('app-vote'));
     this.getAllReviewsFromPage();
     this.checkAuthentication();
     this.connect();

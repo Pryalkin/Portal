@@ -28,16 +28,15 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.getAllGroupTopics('1');
   }
 
-  public check(i: string):void {
-
-      this.getAllGroupTopics(i);
+  public sort(iSortingCode: string):void {
+      this.getAllGroupTopics(iSortingCode);
   }
 
-  private getAllGroupTopics(i: string){
+  private getAllGroupTopics(iSortingCode: string){
     this.route.params.subscribe((params: Params) => {
       this.nameGroup = params['group'];
       this.subscriptions.push(
-        this.generalOverviewService.getAllGroupTopics(this.nameGroup, i).subscribe(
+        this.generalOverviewService.getAllGroupTopics(this.nameGroup, iSortingCode).subscribe(
           (response: Array<GeneralOverview>) => {
             console.log(response);
             this.generalOverviews = response;

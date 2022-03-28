@@ -31,19 +31,19 @@ export class GeneralOverviewService {
     (`${this.host}/overview/tags`);
   }
 
-  public getAllUserReview(username: string, i: string): Observable<Array<GeneralOverview>>{
+  public getAllUserReview(username: string, iSortingCode: string): Observable<Array<GeneralOverview>>{
     return this.http.get<Array<GeneralOverview>>
-    (`${this.host}/group/user/${username}/${i}`);
+    (`${this.host}/group/user/${username}/${iSortingCode}`);
   }
 
-  public getAllGroupTopicsForHome(i: string): Observable<Array<GeneralOverview>>{
+  public getAllGroupTopicsForHome(iSortingCode: string): Observable<Array<GeneralOverview>>{
     return this.http.get<Array<GeneralOverview>>
-    (`${this.host}/group/${i}`);
+    (`${this.host}/group/${iSortingCode}`);
   }
 
-  public getAllGroupTopics(group: string, i: string): Observable<Array<GeneralOverview>>{
+  public getAllGroupTopics(group: string, iSortingCode: string): Observable<Array<GeneralOverview>>{
     return this.http.get<Array<GeneralOverview>>
-    (`${this.host}/group/${group}/${i}`);
+    (`${this.host}/group/${group}/${iSortingCode}`);
   }
 
   public getTopicGroup(idGeneralOverview: string): Observable<GeneralOverview>{

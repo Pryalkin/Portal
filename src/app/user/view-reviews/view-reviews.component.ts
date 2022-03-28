@@ -10,6 +10,7 @@ import {NotificationType} from "../../enum/notification-type.enum";
 import {NgForm} from "@angular/forms";
 import {CustomHttpResponse} from "../../model/custom-http-response";
 import * as SockJS from "sockjs-client";
+import {environment} from "../../../environments/environment.prod";
 
 @Component({
   selector: 'app-view-reviews',
@@ -18,6 +19,7 @@ import * as SockJS from "sockjs-client";
 })
 export class ViewReviewsComponent implements OnInit, OnDestroy {
 
+  public host: string = environment.apiUrl;
   public generalOverviews: Array<GeneralOverview> = new Array<GeneralOverview>();
   private subscriptions: Subscription[] = [];
   private username!: string;
@@ -26,7 +28,7 @@ export class ViewReviewsComponent implements OnInit, OnDestroy {
   private valuesToDeleteGeneralOverview: number[] = new Array();
   public removedElement: HTMLElement[] = new Array();
   public mainBlockRemovedElement: HTMLElement[] = new Array();
-  socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+  socket = new SockJS(`${this.host}/gs-guide-websocket`);
 
   constructor(private generalOverviewService: GeneralOverviewService,
               private notificationService: NotificationService,
@@ -66,19 +68,18 @@ export class ViewReviewsComponent implements OnInit, OnDestroy {
     this.mainBlockRemovedElement.push(<HTMLElement>document.getElementById('mainBlock' + valueToDeleteGeneralOverview));
     document.getElementById('idReview' + valueToDeleteGeneralOverview)!.remove();
     document.getElementById('mainBlock' + valueToDeleteGeneralOverview)?.children[0].removeAttribute('hidden');
-    console.log('Я хочу удалить!');
   }
 
-  public check(i: string):void {
-    this.valueForSort = i;
-    this.getAllUserReview(i);
+  public sort(iSortingCode: string):void {
+    this.valueForSort = iSortingCode;
+    this.getAllUserReview(iSortingCode);
   }
 
-  public filter(i: string):void {
-    if (+i == 3){
+  public filter(iSortingCode: string):void {
+    if (+iSortingCode == 3){
       this.filterCheck = false;
     }
-    if (+i == 1){
+    if (+iSortingCode == 1){
       this.filterCheck = true;
     }
   }
@@ -96,12 +97,12 @@ export class ViewReviewsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getAllUserReview(i: string){
+  private getAllUserReview(iSortingCode: string){
     this.filterCheck = false;
     const inputChecked: HTMLInputElement = <HTMLInputElement>(document.getElementById("btnradio10"));
     inputChecked.checked = true;
       this.subscriptions.push(
-        this.generalOverviewService.getAllUserReview(this.username, i).subscribe(
+        this.generalOverviewService.getAllUserReview(this.username, iSortingCode).subscribe(
           (response: Array<GeneralOverview>) => {
             this.generalOverviews = response;
           },

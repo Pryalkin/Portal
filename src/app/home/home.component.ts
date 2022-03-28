@@ -27,14 +27,14 @@ public generalOverviews: Array<GeneralOverview> = new Array<GeneralOverview>();
     this.getAllGroupTopicsForHome('1');
   }
 
-  public check(i: string):void {
-    this.getAllGroupTopicsForHome(i);
+  public sort(iSortingCode: string):void {
+    this.getAllGroupTopicsForHome(iSortingCode);
   }
 
-  private getAllGroupTopicsForHome(i: string){
+  private getAllGroupTopicsForHome(iSortingCode: string){
     this.route.params.subscribe((params: Params) => {
       this.subscriptions.push(
-        this.generalOverviewService.getAllGroupTopicsForHome(i).subscribe(
+        this.generalOverviewService.getAllGroupTopicsForHome(iSortingCode).subscribe(
           (response: Array<GeneralOverview>) => {
             console.log(response);
             this.generalOverviews = response;

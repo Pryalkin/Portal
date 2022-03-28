@@ -7,6 +7,7 @@ import {CompatClient, Stomp} from "@stomp/stompjs";
 import {AuthenticationService} from "../../../service/authentication.service";
 import {NgForm} from "@angular/forms";
 import {Comments} from "../../../model/comments";
+import {environment} from "../../../../environments/environment.prod";
 
 
 @Component({
@@ -16,6 +17,8 @@ import {Comments} from "../../../model/comments";
 })
 export class CommentsComponent implements OnInit {
 
+  private host: string = environment.apiUrl;
+  socket = new SockJS(`${this.host}/gs-guide-websocket`);
   private stompClient!: CompatClient;
   private idGeneralOverview: string = '0';
   public comments: Comments[] = new Array<Comments>();
@@ -50,8 +53,7 @@ export class CommentsComponent implements OnInit {
   }
 
   private connect() {
-    const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
-    this.stompClient = Stomp.over(socket);
+    this.stompClient = Stomp.over(this.socket);
     const _this = this;
     this.stompClient.connect({}, function (frame: any) {
       console.log('Connected: ' + frame);
